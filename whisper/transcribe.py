@@ -37,7 +37,7 @@ if TYPE_CHECKING:
 
 def transcribe(
     model: "Whisper",
-    audio: Union[str, np.ndarray, torch.Tensor],
+    mel: Union[str, np.ndarray, torch.Tensor],
     *,
     verbose: Optional[bool] = None,
     temperature: Union[float, Tuple[float, ...]] = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0),
@@ -130,7 +130,10 @@ def transcribe(
         decode_options["fp16"] = False
 
     # Pad 30-seconds of silence to the input audio, for slicing
-    mel = log_mel_spectrogram(audio, model.dims.n_mels, padding=N_SAMPLES)
+    # mel = log_mel_spectrogram(audio, model.dims.n_mels, padding=N_SAMPLES)
+
+    ## EMULATE WITH MEL INPUT
+    mel = torch.cat((mel, torch.zeros((128, 3000), dtype=mel.dtype)), dim=-1)
     content_frames = mel.shape[-1] - N_FRAMES
     content_duration = float(content_frames * HOP_LENGTH / SAMPLE_RATE)
 
