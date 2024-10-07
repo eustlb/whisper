@@ -133,7 +133,7 @@ def transcribe(
     # mel = log_mel_spectrogram(audio, model.dims.n_mels, padding=N_SAMPLES)
 
     ## EMULATE WITH MEL INPUT
-    mel = torch.cat((mel, torch.zeros((128, 3000), dtype=mel.dtype, device=mel.device)), dim=-1)
+    mel = torch.cat((mel, torch.zeros((mel.shape[0], 3000), dtype=mel.dtype, device=mel.device)), dim=-1)
     content_frames = mel.shape[-1] - N_FRAMES
     content_duration = float(content_frames * HOP_LENGTH / SAMPLE_RATE)
 
