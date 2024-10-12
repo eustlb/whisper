@@ -132,7 +132,10 @@ def transcribe(
 
     # Pad 30-seconds of silence to the input audio, for slicing
     # mel = log_mel_spectrogram(audio, model.dims.n_mels, padding=N_SAMPLES)
-    # -> EMULATE WITH MEL INPUT : contact this 3000 frames of 0
+    # EMULATE WITH MEL INPUT :
+    # OpenAI's implementation pads the audio with 30s of 0s before extracting the mel spectrogram, which boils down to adding 3000 frames to the mel input
+    # the pad value the use here is not important: both Tranformers and OpenAI implementations will extract from the mel input the frames that correspond
+    # to the input audio and pad with zeros if necessary to reach 3000 frames as required by the encoder.
     mel = torch.cat((mel, torch.zeros((mel.shape[0], 3000), dtype=mel.dtype, device=mel.device)), dim=-1)
     content_frames = mel.shape[-1] - N_FRAMES
     content_duration = float(content_frames * HOP_LENGTH / SAMPLE_RATE)
